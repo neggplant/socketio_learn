@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Socket.IO Test</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const randomToken = generateRandomToken();
+            const timestamp = generateTimestamp();
+            var socket = io.connect('http://localhost:8000', {
+                query: {
+                    token: randomToken,
+                    t: timestamp
+                },
+                auth: {
+                    auth1: "au11"
+                }
+            });
+
+            document.getElementById('sendButton').onclick = function () {
+                var message = document.getElementById('myMessage').value;
+                socket.emit('my_message_all', message);
+            };
+
+            // 为断开连接的按钮添加事件监听器
+            document.getElementById('disconnectButton').onclick = function () {
+                socket.disconnect();
+                console.log('Disconnected from the server');
+            };
+        });
+
+        // 生成一个随机数或其他动态参数
+        function generateRandomToken() {
+            return Math.random().toString(36).substr(2);
+        }
+
+        // 生成一个时间戳
+        function generateTimestamp() {
+            return new Date().getTime().toString();
+        }
+    </script>
+</head>
+<body>
+<input type="text" id="myMessage" placeholder="Type your message here">
+<button id="sendButton">Send</button>
+<button id="disconnectButton">Disconnect</button>
+</body>
+</html>
